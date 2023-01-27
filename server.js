@@ -39,7 +39,7 @@ function getServer() {
   return server;
 }
 
-const port = "50051"
+const port = "3000"
 
 if (require.main === module) {
   var routeServer = getServer();
