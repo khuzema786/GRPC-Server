@@ -1,3 +1,5 @@
+var fs = require("fs")
+
 var PROTO_PATH = __dirname + '/chat.proto';
 
 var grpc = require('@grpc/grpc-js');
@@ -41,9 +43,15 @@ function getServer() {
 
 const port = "3000"
 
+const credentials = grpc.ServerCredentials.createSsl(
+  fs.readFileSync('./certs/ca.crt'), [{
+  cert_chain: fs.readFileSync('./certs/server.crt'),
+  private_key: fs.readFileSync('./certs/server.key')
+}], true);
+
 if (require.main === module) {
   var routeServer = getServer();
-  routeServer.bindAsync(`0.0.0.0:${port}`, grpc.ServerCredentials.createInsecure(), () => {
+  routeServer.bindAsync(`0.0.0.0:${port}`, credentials, () => {
     routeServer.start();
     console.log(`Server started on port : ${port}`)
   })
